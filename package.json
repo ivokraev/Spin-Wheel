@@ -11,6 +11,7 @@
 	},
 	"devDependencies": {
 		"@nuxt/devtools": "latest",
+		"@types/uuid": "^9.0.7",
 		"autoprefixer": "^10.4.16",
 		"nuxt": "^3.8.2",
 		"postcss": "^8.4.32",
@@ -19,6 +20,11 @@
 		"vue-router": "^4.2.5"
 	},
 	"dependencies": {
-		"prettier": "^3.1.1"
+		"@vee-validate/nuxt": "^4.12.3",
+		"@vee-validate/zod": "^4.12.3",
+		"prettier": "^3.1.1",
+		"uuid": "^9.0.1",
+		"vee-validate": "^4.12.3",
+		"zod": "^3.22.4"
 	}
 }
