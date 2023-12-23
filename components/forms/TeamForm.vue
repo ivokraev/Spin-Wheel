@@ -1,54 +1,29 @@
 <script lang="ts" setup>
-import { Field, useFieldArray, useForm } from "vee-validate";
-import { type Team, TeamsSchema } from "@/schemas/Team";
+import { Field } from "vee-validate";
+import { useTeamsStore } from "~/store/teams";
 
-import { v4 as uuidv4 } from "uuid";
-import { toTypedSchema } from "@vee-validate/zod";
+const teamsStore = useTeamsStore();
 
-const { handleSubmit } = useForm({
-	validationSchema: toTypedSchema(TeamsSchema),
-	initialValues: {
-		teams: [],
-	},
-});
+const { teams } = storeToRefs(teamsStore);
 
-const { remove, push, fields } = useFieldArray<Team>("teams");
-
-const onRemove = (uuid: string) =>
-	remove(fields.value.findIndex((team) => team.value.id === uuid));
-
-const onPush = () =>
-	push({
-		id: uuidv4(),
-		text: "",
-		colorHex: generateColor(),
-		visible: true,
-	});
-
-const onSubmit = handleSubmit((values) => {
-	console.log(values);
-});
+const { CreateTeam, RemoveTeam } = teamsStore;
 </script>
 
 <template>
-	<form novalidate @submit="onSubmit">
-		<div
-			v-for="(field, idx) in fields"
-			:key="field.value.id"
-			class="flex flex-row"
-		>
-			<Field :name="`teams[${idx}].text`" type="text" />
+	<form>
+		<div v-for="team in teams.teams" :key="team.id" class="flex flex-row">
+			<Field v-model="team.text" :name="`${team.id}.text`" type="text" />
 
-			<Field :name="`teams[${idx}].colorHex`" type="text" />
-
-			<div
-				:style="{ backgroundColor: field.value.colorHex }"
-				class="w-8 h-8"
+			<Field
+				v-model="team.colorHex"
+				:name="`${team.id}.colorHex`"
+				type="text"
 			/>
 
-			<button type="button" @click="onRemove(field.value.id)">X</button>
+			<div :style="{ backgroundColor: team.colorHex }" class="w-8 h-8" />
+
+			<button type="button" @click="RemoveTeam(team.id)">X</button>
 		</div>
-		<button type="button" @click="onPush">Add</button>
-		<button type="submit">Submit</button>
+		<button type="button" @click="CreateTeam">Add</button>
 	</form>
 </template>
