@@ -20,8 +20,10 @@
 		"vue-router": "^4.2.5"
 	},
 	"dependencies": {
+		"@pinia/nuxt": "^0.5.1",
 		"@vee-validate/nuxt": "^4.12.3",
 		"@vee-validate/zod": "^4.12.3",
+		"pinia": "^2.1.7",
 		"prettier": "^3.1.1",
 		"uuid": "^9.0.1",
 		"vee-validate": "^4.12.3",
