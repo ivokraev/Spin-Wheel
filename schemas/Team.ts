@@ -2,7 +2,7 @@ import { z } from "zod";
 
 export const TeamSchema = z.object({
 	id: z.string().uuid(),
-	text: z.string(),
+	name: z.string(),
 	colorHex: z.string().min(4).max(9).startsWith("#"),
 	visible: z.boolean(),
 });

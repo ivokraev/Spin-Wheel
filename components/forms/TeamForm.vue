@@ -12,7 +12,7 @@ const { CreateTeam, RemoveTeam } = teamsStore;
 <template>
 	<form>
 		<div v-for="team in teams.teams" :key="team.id" class="flex flex-row">
-			<Field v-model="team.text" :name="`${team.id}.text`" type="text" />
+			<Field v-model="team.name" :name="`${team.id}.text`" type="text" />
 
 			<Field
 				v-model="team.colorHex"
