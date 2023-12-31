@@ -14,6 +14,8 @@ Chart.register(ArcElement, PieController);
 
 const teamsStore = useTeamsStore();
 
+const { RemoveTeam } = teamsStore;
+
 const { teams } = storeToRefs(teamsStore);
 
 const teamAngle = computed(() => 360 / teams.value.teams.length);
@@ -77,19 +79,40 @@ const startSpin = () => {
 		chart.options.animation = {
 			duration: 5000,
 			easing: "easeOutSine",
-			onComplete: (event) => {
-				if (isRotated) {
-					chart.options.animation = {
-						duration: 0,
-						onComplete: () => {},
-					};
-					chart.update();
-				}
+			onComplete: async (event) => {
+				clearAnimation();
+				if (isRotated) await checkWinner(chart.options.rotation);
+				isRotated = false;
 			},
 		};
 		chart.update();
 	}
 };
+
+async function checkWinner(rotation: number) {
+	const currentAngle = rotation % 360;
+	const winnerIndex =
+		teams.value.teams.length -
+		Math.floor(currentAngle / teamAngle.value) -
+		1;
+
+	const winnerId = teams.value.teams[winnerIndex].id;
+
+	await new Promise((resolve, reject) =>
+		setTimeout(() => {
+			RemoveTeam(winnerId);
+			resolve();
+		}, 3000),
+	);
+}
+
+function clearAnimation() {
+	chart.options.animation = {
+		duration: 0,
+		onComplete: () => {},
+	};
+	chart.update();
+}
 </script>
 
 <template>
