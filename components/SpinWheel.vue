@@ -1,10 +1,15 @@
 <script setup lang="ts">
-import { Chart as ChartJS, ArcElement, PieController } from "chart.js";
+import {
+	Chart,
+	ArcElement,
+	PieController,
+	type PieControllerChartOptions,
+} from "chart.js";
 import ChartDataLabels from "chartjs-plugin-datalabels";
 import { useTeamsStore } from "~/store/teams";
 import type { ChartOptions } from "chart.js/dist/types";
 
-ChartJS.register(ArcElement, PieController);
+Chart.register(ArcElement, PieController);
 
 const teamsStore = useTeamsStore();
 
@@ -40,7 +45,7 @@ const options: ChartOptions = {
 };
 
 const canvas = ref(null);
-let chart: ChartJS;
+let chart: Chart<"pie", 1[], string>;
 
 watch(teams.value, () => {
 	chart.data = data.value;
@@ -48,7 +53,7 @@ watch(teams.value, () => {
 });
 
 onMounted(() => {
-	chart = new ChartJS(canvas.value, {
+	chart = new Chart(canvas.value, {
 		type: "pie",
 		data: data.value,
 		plugins: [ChartDataLabels],
