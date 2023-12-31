@@ -7,7 +7,7 @@ import {
 } from "chart.js";
 import ChartDataLabels from "chartjs-plugin-datalabels";
 import { useTeamsStore } from "~/store/teams";
-import type { ChartOptions } from "chart.js/dist/types";
+import type { ChartData } from "chart.js/dist/types";
 
 Chart.register(ArcElement, PieController);
 
@@ -16,6 +16,7 @@ const teamsStore = useTeamsStore();
 const { teams } = storeToRefs(teamsStore);
 
 const data = computed(() => ({
+const data = computed<ChartData>(() => ({
 	labels: teams.value.teams.map((team) => team.name),
 	datasets: [
 		{
@@ -25,7 +26,7 @@ const data = computed(() => ({
 	],
 }));
 
-const options: ChartOptions = {
+const options: PieControllerChartOptions = {
 	responsive: true,
 	animation: {
 		duration: 0,
