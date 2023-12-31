@@ -8,6 +8,7 @@ import {
 import ChartDataLabels from "chartjs-plugin-datalabels";
 import { useTeamsStore } from "~/store/teams";
 import type { ChartData } from "chart.js/dist/types";
+import { remap } from "@antfu/utils";
 
 Chart.register(ArcElement, PieController);
 
@@ -15,7 +16,8 @@ const teamsStore = useTeamsStore();
 
 const { teams } = storeToRefs(teamsStore);
 
-const data = computed(() => ({
+const teamAngle = computed(() => 360 / teams.value.teams.length);
+
 const data = computed<ChartData>(() => ({
 	labels: teams.value.teams.map((team) => team.name),
 	datasets: [
@@ -43,6 +45,7 @@ const options: PieControllerChartOptions = {
 			font: { size: 24 },
 		},
 	},
+	rotation: -(teamAngle.value / 2),
 };
 
 const canvas = ref(null);
@@ -50,6 +53,7 @@ let chart: Chart<"pie", 1[], string>;
 
 watch(teams.value, () => {
 	chart.data = data.value;
+	chart.options.rotation = -(teamAngle.value / 2);
 	chart.update();
 });
 
@@ -63,10 +67,13 @@ onMounted(() => {
 });
 
 let isRotated = false;
-const onClick = () => {
+const startSpin = () => {
 	if (chart) {
+		const rotationTimes = remap(Math.random(), 0, 1, 7, 10);
+		const additionalRotationAngle = Math.random() * teamAngle.value;
+
 		isRotated = true;
-		chart.options.rotation += 1500;
+		chart.options.rotation += rotationTimes * 360 + additionalRotationAngle;
 		chart.options.animation = {
 			duration: 5000,
 			easing: "easeOutSine",
