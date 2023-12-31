@@ -116,8 +116,15 @@ function clearAnimation() {
 </script>
 
 <template>
-	<canvas ref="canvas" @click="onClick" />
-	<button @click="onClick">Spin</button>
+	<div class="relative w-[1000px]">
+		<canvas ref="canvas" />
+		<button
+			@click="startSpin"
+			class="absolute top-1/2 left-1/2 -translate-x-2/4 -translate-y-2/4 bg-white w-32 h-32 rounded-full text text-3xl after:content-[''] after:absolute after:-top-[75px] after:left-1/2 after:-translate-x-1/2 after:w-0 after:h-0 after:border-b-white after:border-x-transparent after:border-t-0 after:border-x-[20px] after:border-b-[80px]"
+		>
+			Spin
+		</button>
+	</div>
 </template>
 
 <style scoped></style>
