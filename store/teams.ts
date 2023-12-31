@@ -10,7 +10,7 @@ export const useTeamsStore = defineStore("teams", () => {
 	function CreateTeam() {
 		teams.value.teams.push({
 			id: uuidv4(),
-			text: "",
+			name: "",
 			colorHex: generateColor(),
 			visible: true,
 		});
