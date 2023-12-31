@@ -20,6 +20,8 @@ const { teams } = storeToRefs(teamsStore);
 
 const teamAngle = computed(() => 360 / teams.value.teams.length);
 
+let pervCount: number = teams.value.teams.length;
+
 const data = computed<ChartData>(() => ({
 	labels: teams.value.teams.map((team) => team.name),
 	datasets: [
@@ -41,7 +43,9 @@ const options: PieControllerChartOptions = {
 			display: false,
 		},
 		datalabels: {
-			color: "#ffffff",
+			color: teams.value.teams.map((team) =>
+				calculateFontColor(team.colorHex),
+			),
 			formatter: (_, context) =>
 				context.chart.data.labels[context.dataIndex],
 			font: { size: 24 },
@@ -55,7 +59,17 @@ let chart: Chart<"pie", 1[], string>;
 
 watch(teams.value, () => {
 	chart.data = data.value;
-	chart.options.rotation = -(teamAngle.value / 2);
+	chart.options.plugins.datalabels.color = teams.value.teams.map((team) =>
+		calculateFontColor(team.colorHex),
+	);
+	if (pervCount < teams.value.teams.length)
+		chart.options.rotation = -(teamAngle.value / 2);
+	if (teams.value.teams.length > 10)
+		chart.options.plugins.datalabels.rotation = teams.value.teams.map(
+			(team, index) => 270 + teamAngle.value * index,
+		);
+	else chart.options.plugins.datalabels.rotation = 0;
+	pervCount = teams.value.teams.length;
 	chart.update();
 });
 
