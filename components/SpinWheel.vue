@@ -56,6 +56,8 @@ const options: ChartOptions<"pie"> = {
 
 const canvas = ref(null);
 let chart: Chart<"pie", 1[], string>;
+const dialog = ref(false);
+const winnerTeam = ref<Team>();
 
 watch(teams.value, () => {
 	if (!chart.options.plugins || !chart.options.plugins.datalabels) return;
@@ -118,6 +120,9 @@ async function checkWinner(rotation: number) {
 
 	await new Promise<void>((resolve, reject) =>
 		setTimeout(() => {
+			winnerTeam.value = teams.value.teams[winnerIndex];
+			dialog.value = true;
+
 			RemoveTeam(winnerId);
 			resolve();
 		}, 3000),
@@ -142,6 +147,18 @@ function clearAnimation() {
 		>
 			Spin
 		</button>
+		<v-dialog v-model="dialog" width="auto">
+			<v-card>
+				<v-card-text class="text-h4">
+					The winner is {{ winnerTeam!.name }}
+				</v-card-text>
+				<v-card-actions>
+					<v-btn color="error" :block="true" @click="dialog = false"
+						>Close</v-btn
+					>
+				</v-card-actions>
+			</v-card>
+		</v-dialog>
 	</div>
 </template>
 
