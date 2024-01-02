@@ -10,7 +10,7 @@ import { useTeamsStore } from "~/store/teams";
 import type { ChartData } from "chart.js/dist/types";
 import { remap } from "@antfu/utils";
 
-Chart.register(ArcElement, PieController);
+Chart.register(ArcElement, PieController, ChartDataLabels);
 
 const teamsStore = useTeamsStore();
 
@@ -38,7 +38,9 @@ const options: PieControllerChartOptions = {
 		duration: 0,
 	},
 	plugins: {
-		tooltip: false,
+		tooltip: {
+			enabled: false,
+		},
 		legend: {
 			display: false,
 		},
@@ -47,10 +49,13 @@ const options: PieControllerChartOptions = {
 				calculateFontColor(team.colorHex),
 			),
 			formatter: (_, context) =>
-				context.chart.data.labels[context.dataIndex],
+				context.chart.data.labels
+					? context.chart.data.labels[context.dataIndex]
+					: "",
 			font: { size: 24 },
 		},
 	},
+	responsive: true,
 	rotation: -(teamAngle.value / 2),
 };
 
@@ -58,6 +63,8 @@ const canvas = ref(null);
 let chart: Chart<"pie", 1[], string>;
 
 watch(teams.value, () => {
+	if (!chart.options.plugins || !chart.options.plugins.datalabels) return;
+
 	chart.data = data.value;
 	chart.options.plugins.datalabels.color = teams.value.teams.map((team) =>
 		calculateFontColor(team.colorHex),
@@ -74,33 +81,35 @@ watch(teams.value, () => {
 });
 
 onMounted(() => {
-	chart = new Chart(canvas.value, {
+	if (!canvas.value) return;
+	chart = new Chart<"pie", 1[], string>(canvas.value, {
 		type: "pie",
 		data: data.value,
-		plugins: [ChartDataLabels],
 		options,
 	});
 });
 
 let isRotated = false;
 const startSpin = () => {
-	if (chart) {
-		const rotationTimes = remap(Math.random(), 0, 1, 7, 10);
-		const additionalRotationAngle = Math.random() * teamAngle.value;
+	if (!chart || !chart.options.rotation) return;
 
-		isRotated = true;
-		chart.options.rotation += rotationTimes * 360 + additionalRotationAngle;
-		chart.options.animation = {
-			duration: 5000,
-			easing: "easeOutSine",
-			onComplete: async (event) => {
-				clearAnimation();
-				if (isRotated) await checkWinner(chart.options.rotation);
-				isRotated = false;
-			},
-		};
-		chart.update();
-	}
+	const rotationTimes = remap(Math.random(), 0, 1, 7, 10);
+	const additionalRotationAngle = Math.random() * 360;
+
+	isRotated = true;
+	chart.options.rotation += rotationTimes * 360 + additionalRotationAngle;
+	chart.options.animation = {
+		duration: 5000,
+		easing: "easeOutSine",
+		onComplete: async (event) => {
+			clearAnimation();
+
+			if (isRotated && chart.options.rotation)
+				await checkWinner(chart.options.rotation);
+			isRotated = false;
+		},
+	};
+	chart.update();
 };
 
 async function checkWinner(rotation: number) {
@@ -112,7 +121,7 @@ async function checkWinner(rotation: number) {
 
 	const winnerId = teams.value.teams[winnerIndex].id;
 
-	await new Promise((resolve, reject) =>
+	await new Promise<void>((resolve, reject) =>
 		setTimeout(() => {
 			RemoveTeam(winnerId);
 			resolve();
