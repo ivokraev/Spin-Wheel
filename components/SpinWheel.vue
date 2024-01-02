@@ -1,14 +1,10 @@
 <script setup lang="ts">
-import {
-	Chart,
-	ArcElement,
-	PieController,
-	type PieControllerChartOptions,
-} from "chart.js";
+import { Chart, ArcElement, PieController, type ChartOptions } from "chart.js";
 import ChartDataLabels from "chartjs-plugin-datalabels";
 import { useTeamsStore } from "~/store/teams";
 import type { ChartData } from "chart.js/dist/types";
 import { remap } from "@antfu/utils";
+import type { Team } from "~/schemas/Team";
 
 Chart.register(ArcElement, PieController, ChartDataLabels);
 
@@ -22,7 +18,7 @@ const teamAngle = computed(() => 360 / teams.value.teams.length);
 
 let pervCount: number = teams.value.teams.length;
 
-const data = computed<ChartData>(() => ({
+const data = computed<ChartData<"pie", 1[], string>>(() => ({
 	labels: teams.value.teams.map((team) => team.name),
 	datasets: [
 		{
@@ -32,8 +28,7 @@ const data = computed<ChartData>(() => ({
 	],
 }));
 
-const options: PieControllerChartOptions = {
-	responsive: true,
+const options: ChartOptions<"pie"> = {
 	animation: {
 		duration: 0,
 	},
