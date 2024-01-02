@@ -4,7 +4,34 @@ import { v4 as uuidv4 } from "uuid";
 
 export const useTeamsStore = defineStore("teams", () => {
 	// ----- STATE -----
-	const teams = useState<Teams>("teamsStore", () => ({ teams: [] }));
+	const teams = useState<Teams>("teamsStore", () => ({
+		teams: [
+			{
+				id: uuidv4(),
+				name: "Team1",
+				colorHex: generateColor(),
+				visible: true,
+			},
+			{
+				id: uuidv4(),
+				name: "Team2",
+				colorHex: generateColor(),
+				visible: true,
+			},
+			{
+				id: uuidv4(),
+				name: "Team3",
+				colorHex: generateColor(),
+				visible: true,
+			},
+			{
+				id: uuidv4(),
+				name: "Team4",
+				colorHex: generateColor(),
+				visible: true,
+			},
+		],
+	}));
 
 	// ----- ACTIONS -----
 	function CreateTeam() {
