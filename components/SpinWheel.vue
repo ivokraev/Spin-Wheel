@@ -139,7 +139,7 @@ function clearAnimation() {
 </script>
 
 <template>
-	<div class="relative w-[1000px]">
+	<div class="relative">
 		<canvas ref="canvas" />
 		<button
 			@click="startSpin"
