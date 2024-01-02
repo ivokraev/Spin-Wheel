@@ -16,10 +16,14 @@
 		"nuxt": "^3.8.2",
 		"postcss": "^8.4.32",
 		"tailwindcss": "^3.3.7",
+		"vite-plugin-vuetify": "^2.0.1",
 		"vue": "^3.3.12",
-		"vue-router": "^4.2.5"
+		"vue-router": "^4.2.5",
+		"vuetify": "^3.4.9",
+		"vuetify-nuxt-module": "latest"
 	},
 	"dependencies": {
+		"@mdi/font": "^7.4.47",
 		"@pinia/nuxt": "^0.5.1",
 		"@vee-validate/nuxt": "^4.12.3",
 		"@vee-validate/zod": "^4.12.3",
